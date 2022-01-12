@@ -80,11 +80,18 @@ const myCalculator = {
                     element.addEventListener('click', () => {
                         const value = myCalculator.display.value;
                         let decreaseFactor = -1;
+                        let limitFactor = 1;
                         if (value.includes(',') && value.split(',')[1].length === 1) {
                             decreaseFactor--;
                         }
+                        if (value.includes('-')) {
+                            limitFactor++;
+                        }
                         myCalculator.display.value =
-                            value.length <= 1 ? '0' : value.slice(0, decreaseFactor);
+                            value.length <= limitFactor ? '0' : value.slice(0, decreaseFactor);
+                        if (myCalculator.display.value === '-0') {
+                            myCalculator.display.value = '0';
+                        }
                     });
                     break;
                 case element.value === ',':
