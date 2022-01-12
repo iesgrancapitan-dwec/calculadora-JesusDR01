@@ -42,7 +42,6 @@
                 display.setAttribute('id', 'display');
                 display.setAttribute('name', 'display');
                 display.setAttribute('value', '0');
-                // display.setAttribute('disabled', 'true');
                 myCalculator.wrapper = document.createElement('div');
                 myCalculator.display = display;
 
@@ -81,6 +80,7 @@
                             if (myCalculator.operating) {
                                 myCalculator.operating = false;
                                 myCalculator.display.value = element.value;
+                                
                             } else {
                                 myCalculator.display.value =
                                     myCalculator.display.value === '0'
@@ -131,30 +131,17 @@
                         break;
                     case /[\+\-\x\÷\%]/g.test(element.value):
                         element.addEventListener('click', () => {
+                            if (myCalculator.operator) {
+                                myCalculator.operate();
+                            }
                             myCalculator.operand1 = myCalculator.display.value;
                             myCalculator.operator = element.value;
                             myCalculator.operating = true;
+                            
                         });
                         break;
                     case element.value === '=':
-                        element.addEventListener('click', () => {
-                            if (myCalculator.operator && !myCalculator.operating) {
-                                myCalculator.operand2 = myCalculator.display.value;
-                                myCalculator.operand1 = myCalculator.operand1.replace(',', '.');
-                                myCalculator.operand2 = myCalculator.operand2.replace(',', '.');
-                                const result = myCalculator.calculate();
-
-                                myCalculator.display.value = isNaN(result)
-                                    ? '0' //0/0
-                                    : result.toString().replace('.', ',');
-                                if (myCalculator.display.value.length > 10) {
-                                    myCalculator.display.style.fontSize = '1em';
-                                }
-                                myCalculator.operand1 = undefined;
-                                myCalculator.operand2 = undefined;
-                                myCalculator.operator = undefined;
-                            }
-                        });
+                        element.addEventListener('click', myCalculator.operate);
                         break;
                 }
             });
@@ -179,6 +166,24 @@
             }
             return result;
         },
+        operate: () => {
+            if (myCalculator.operator && !myCalculator.operating) {
+                myCalculator.operand2 = myCalculator.display.value;
+                myCalculator.operand1 = myCalculator.operand1.replace(',', '.');
+                myCalculator.operand2 = myCalculator.operand2.replace(',', '.');
+                const result = myCalculator.calculate();
+
+                myCalculator.display.value = isNaN(result)
+                    ? '0' //0/0
+                    : result.toString().replace('.', ',');
+                if (myCalculator.display.value.length > 10) {
+                    myCalculator.display.style.fontSize = '1em';
+                }
+                myCalculator.operand1 = undefined;
+                myCalculator.operand2 = undefined;
+                myCalculator.operator = undefined;
+            }
+        }
     };
     myCalculator.init();
 }
