@@ -92,6 +92,7 @@
                     case element.value === 'CE':
                         element.addEventListener('click', () => {
                             myCalculator.display.value = '0';
+                            myCalculator.reset();
                         });
                         break;
                     case element.value === '←':
@@ -179,10 +180,14 @@
                 if (myCalculator.display.value.length > 10) {
                     myCalculator.display.style.fontSize = '1em';
                 }
-                myCalculator.operand1 = undefined;
-                myCalculator.operand2 = undefined;
-                myCalculator.operator = undefined;
+                myCalculator.reset();
             }
+        },
+        reset: () => {
+            myCalculator.operand1 = undefined;
+            myCalculator.operand2 = undefined;
+            myCalculator.operator = undefined;
+            myCalculator.operating = false;
         }
     };
     myCalculator.init();
