@@ -31,64 +31,77 @@ const myCalculator = {
         ',',
         '=',
     ],
-    init() {
+    init: () => {
         window.addEventListener('DOMContentLoaded', () => {
             let display = document.createElement('input');
             display.setAttribute('type', 'text');
             display.setAttribute('id', 'display');
             display.setAttribute('name', 'display');
             display.setAttribute('value', '0');
-            this.wrapper = document.createElement('div');
-            this.display = display;
+            myCalculator.wrapper = document.createElement('div');
+            myCalculator.display = display;
 
-            this.wrapper.appendChild(this.display);
-            this.buttons.forEach((button) => {
+            myCalculator.wrapper.appendChild(myCalculator.display);
+            myCalculator.buttons.forEach((button) => {
                 let btn = document.createElement('button');
                 btn.setAttribute('id', button);
                 btn.setAttribute('value', button);
                 btn.innerHTML = button;
-                this.wrapper.appendChild(btn);
+                myCalculator.wrapper.appendChild(btn);
             });
-            document.body.appendChild(this.wrapper);
+            document.body.appendChild(myCalculator.wrapper);
 
-            this.initBehaviour();
+            myCalculator.initBehaviour();
         });
     },
-    initBehaviour() {
-            // Inicialmente en el display aparece el cero sin decimal.
-            // En el display sólo puede aparecer un punto decimal.
-            // A la izquierda del punto sólo puede aparecer un cero ("00.1" no es válido).
-            // No hay que escribir "0." para que te acepte el decimal. Basta con que pulse la coma decimal. Entonces el resto se consideran decimales.
-            // En el display siempre ha de haber un dígito. En caso de usar el retroceso y ser el último carácter aparecerá un cero.
-            // El cero negativo no existe ("-0" no es válido)
-        this.wrapper.childNodes.forEach((element) => {
+    initBehaviour: () => {
+        // Inicialmente en el display aparece el cero sin decimal.
+        // En el display sólo puede aparecer un punto decimal.
+        // A la izquierda del punto sólo puede aparecer un cero ("00.1" no es válido).
+        // No hay que escribir "0." para que te acepte el decimal. Basta con que pulse la coma decimal. Entonces el resto se consideran decimales.
+        // En el display siempre ha de haber un dígito. En caso de usar el retroceso y ser el último carácter aparecerá un cero.
+        // El cero negativo no existe ("-0" no es válido)
+        myCalculator.wrapper.childNodes.forEach((element) => {
             switch (true) {
-                case /[0-9]/g.test(element.id):
+                case /[0-9]/g.test(element.value):
                     element.addEventListener('click', () => {
-                        this.display.value = this.display.value === '0' ? element.id : this.display.value + element.id;
+                        myCalculator.display.value =
+                            myCalculator.display.value === '0'
+                                ? element.value
+                                : myCalculator.display.value + element.value;
                     });
                     break;
-                case element.id ==='CE':
+                case element.value === 'CE':
                     element.addEventListener('click', () => {
-                        this.display.value = '0';
+                        myCalculator.display.value = '0';
                     });
                     break;
-                case element.id ==='←':
+                case element.value === '←':
                     element.addEventListener('click', () => {
-                        this.display.value = this.display.value.length > 1 ? this.display.value.slice(0, -1) : '0';
+                        const value = myCalculator.display.value;
+                        let decreaseFactor = -1;
+                        if (value.includes(',') && value.split(',')[1].length === 1) {
+                            decreaseFactor--;
+                        }
+                        myCalculator.display.value =
+                            value.length <= 1 ? '0' : value.slice(0, decreaseFactor);
                     });
                     break;
-                case element.id ===',':
-                    element.addEventListener('click', (e) => {
-                        if (this.display.value.includes(',')) {
-                            e.preventDefault();
-                        };
-                        this.display.value = this.display.value.concat(element.id);
+                case element.value === ',':
+                    element.addEventListener('click', () => {
+                        if (!myCalculator.display.value.includes(',')) {
+                            myCalculator.display.value = myCalculator.display.value.concat(
+                                element.value
+                            );
+                        }
                     });
                     break;
-                case element.id ==='±':
+                case element.value === '±':
                     element.addEventListener('click', () => {
-                        this.display.value = parseInt(this.display.value) * -1;
+                        if (myCalculator.display.value === '0') return;
+                        myCalculator.display.value = myCalculator.display.value.includes('-')
+                            ? myCalculator.display.value.slice(1)
+                            : `-${myCalculator.display.value}`;
                     });
             }
         });
