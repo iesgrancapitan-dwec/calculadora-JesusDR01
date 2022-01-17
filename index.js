@@ -71,7 +71,6 @@
                     };
                 case '←':
                     return () => {
-                        console.log('hola');
                         const displayValue = myCalculator.display.value;
                         console;
                         let decreaseFactor = -1;
@@ -190,5 +189,5 @@
             myCalculator.operating = false;
         },
     };
-    window.addEventListener('DOMContentLoaded', myCalculator.init.bind(myCalculator));
+    window.addEventListener('DOMContentLoaded', myCalculator.init.bind(myCalculator)); //El bind no sirve nde nada si init es arrow, y como todas deben ser arrow pues... Lo dejo ahí para que no se me olvide comentarlo en clase
 }
